@@ -1,9 +1,22 @@
 import sys
+
+
+import shutil
+
 lista=[]
 input_params = sys.argv
 lista_jakie_usunac=[]
-origin = open("sba-tests_origin.yaml", "w")
-nowy=open("new_sba-tests.yaml", "w")
+# origin = open("sba-tests_origin.yaml", "w")
+
+
+source_path = 'sba-tests_origin.yaml'
+
+# Path to the destination file
+destination_path = 'sba-tests.yaml'
+
+# Copy the content of the source file to the destination file
+shutil.copy(source_path, destination_path)
+
 
 
 test=[]
@@ -19,11 +32,13 @@ if test:
     slowo = ''.join(test)
     lista.append(slowo)
 
-with open("sba-tests.yaml") as plik:
-    linie = plik.readlines()
-    for linia in linie:
-        origin.write(linia)
-with open("sba-tests.yaml") as plik:
+# with open("sba-tests.yaml", "r") as plik:
+#     linie = plik.readlines()
+#     for linia in linie:
+#         origin.write(linia)
+
+nowy=open("sba-tests.yaml", "w")
+with open("sba-tests_origin.yaml", "r") as plik:
     linie = plik.readlines()
     nowy.write(linie[0])
     nowy.write(linie[1])
@@ -33,4 +48,13 @@ with open("sba-tests.yaml") as plik:
             nowy.write("#"+ linia)
         else:
             nowy.write(linia)
+
+'''
+
+with open("new_sba-tests.yaml", "r") as new_file, \
+        open("sba-tests.yaml", "w") as source_file:
+    for line in new_file:
+        source_file.write(line)
+
+'''
 
