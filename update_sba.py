@@ -45,9 +45,9 @@ with open("sba-tests_origin.yaml", "r") as plik:
     for linia in linie[2:]:
         slowo = linia[7:].strip()
         if slowo in lista:
-            nowy.write("#"+ linia)
-        else:
             nowy.write(linia)
+        else:
+            nowy.write("#"+ linia)
 
 '''
 
