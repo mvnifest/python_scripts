@@ -20,7 +20,7 @@ shutil.copy(source_path, destination_path)
 
 
 test=[]
-for i in input_params[1][16:]:
+for i in input_params[1][8:]:
 
     if i == ',':
         slowo =''.join(test)
@@ -32,10 +32,7 @@ if test:
     slowo = ''.join(test)
     lista.append(slowo)
 
-# with open("sba-tests.yaml", "r") as plik:
-#     linie = plik.readlines()
-#     for linia in linie:
-#         origin.write(linia)
+print(lista)
 
 nowy=open("sba-tests.yaml", "w")
 with open("sba-tests_origin.yaml", "r") as plik:
@@ -49,12 +46,19 @@ with open("sba-tests_origin.yaml", "r") as plik:
         else:
             nowy.write("#"+ linia)
 
-'''
 
-with open("new_sba-tests.yaml", "r") as new_file, \
-        open("sba-tests.yaml", "w") as source_file:
-    for line in new_file:
-        source_file.write(line)
 
-'''
+nowy=open("sba-tests.yaml", "w")
+with open("sba-tests_origin.yaml", "r") as plik:
+    linie = plik.readlines()
+    nowy.write(linie[0])
+    nowy.write(linie[1])
+    for linia in linie[2:]:
+        slowo = linia[7:].strip()
+        if slowo in lista:
+            nowy.write(linia)
+        else:
+            nowy.write("#"+ linia)
+
+
 
