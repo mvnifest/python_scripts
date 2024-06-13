@@ -1,64 +1,66 @@
 import sys
-
-
 import shutil
 
-lista=[]
-input_params = sys.argv
-lista_jakie_usunac=[]
-# origin = open("sba-tests_origin.yaml", "w")
+# Initialize an empty list to store the parameters
+lista = []
 
-
-source_path = 'sba-tests_origin.yaml'
-
-# Path to the destination file
-destination_path = 'sba-tests.yaml'
+# Path to the source and destination files
+source_path = 'sba-tests.yaml'
+destination_path = 'sba-tests_origin.yaml'
 
 # Copy the content of the source file to the destination file
 shutil.copy(source_path, destination_path)
 
+# Open the source file for writing (this will erase its contents)
+with open("sba-tests.yaml", "w") as help_file:
+    # Open the destination file for reading
+    with open("sba-tests_origin.yaml", "r") as origin_file:
+        lines = origin_file.readlines()
+        for line in lines:
+            # Remove the leading '#' from comment lines and write them to the help file
+            if line.startswith("#"):
+                help_file.write(line[1:])
+            else:
+                help_file.write(line)
 
+# Process the input parameters
+input_params = sys.argv
 
-test=[]
-for i in input_params[1][8:]:
+# Extract the test name and the list of parameters
+test_name = []
+test = []
+indx = -1
 
-    if i == ',':
-        slowo =''.join(test)
-        lista.append(slowo)
-        test[:]=[]
+# Identify the index of the '#' character
+for i, char in enumerate(input_params[1]):
+    if char != "#":
+        test_name.append(char)
     else:
-        test.append(i)
-if test:
-    slowo = ''.join(test)
-    lista.append(slowo)
+        indx = i
+        break
 
-print(lista)
-
-nowy=open("sba-tests.yaml", "w")
-with open("sba-tests_origin.yaml", "r") as plik:
-    linie = plik.readlines()
-    nowy.write(linie[0])
-    nowy.write(linie[1])
-    for linia in linie[2:]:
-        slowo = linia[7:].strip()
-        if slowo in lista:
-            nowy.write(linia)
+# If '#' character is found, process the parameters
+if indx != -1:
+    for i in input_params[1][indx+1:]:
+        if i == ',':
+            word = ''.join(test)
+            lista.append(word)
+            test = []
         else:
-            nowy.write("#"+ linia)
+            test.append(i)
 
+    if test:
+        word = ''.join(test)
+        lista.append("- '@" + word + "'")
 
-
-nowy=open("sba-tests.yaml", "w")
-with open("sba-tests_origin.yaml", "r") as plik:
-    linie = plik.readlines()
-    nowy.write(linie[0])
-    nowy.write(linie[1])
-    for linia in linie[2:]:
-        slowo = linia[7:].strip()
-        if slowo in lista:
-            nowy.write(linia)
-        else:
-            nowy.write("#"+ linia)
-
-
-
+# Modify the destination file based on the collected parameters
+with open("sba-tests_origin.yaml", "w") as nowy:
+    with open("sba-tests.yaml", "r") as plik:
+        linie = plik.readlines()
+        for linia in linie:
+            myslnik = linia.strip()
+            if myslnik and myslnik[0]=="-" and myslnik in lista:
+                nowy.write("#" + linia)
+            else:
+                nowy.write(linia)
+shutil.copy(destination_path,source_path)
