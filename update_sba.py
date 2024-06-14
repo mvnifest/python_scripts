@@ -59,8 +59,11 @@ with open("sba-tests_origin.yaml", "w") as nowy:
         linie = plik.readlines()
         for linia in linie:
             myslnik = linia.strip()
+            print(myslnik[0])
             if myslnik and myslnik[0]=="-" and myslnik in lista:
-                nowy.write("#" + linia)
-            else:
+                nowy.write(linia)
+            if myslnik and  myslnik[0]=="-" and myslnik not in lista:
+                nowy.write("#"+linia)
+            if myslnik[0]!="-":
                 nowy.write(linia)
 shutil.copy(destination_path,source_path)
