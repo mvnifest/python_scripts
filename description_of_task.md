@@ -13,3 +13,20 @@ tests:
       - '@GrepDockerImages'
       - '@SM-QoS_Sess_and_PCCRule_positive-rel15'
 ```
+Lets split to small tasks
+# Parsing the input params
+## split by '#' and get two item in the list for example below:
+```
+# parse_params shoud return dictionary[test_name,list[tags]]
+ def parse_params(param):
+    test_suite = param.split("#")
+    output_dict = {}
+    suite_key = test_suite[0]
+    tests_csv= test_suite[1]
+    #.... some logic here to make list[tags] and adding into output_dict
+    return output_dict
+```
+### params[0] is your test_name
+# check that file sba-tests_origin.yaml exists
+## if not exists copy sba-tests.yaml into sba-tests_origin.yaml
+# reading file line by line and 
