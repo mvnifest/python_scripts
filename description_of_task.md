@@ -175,3 +175,36 @@ for key in test_map:
     update_file(key,test_map[key])
 
 ```
+the following the file example
+```yaml:
+################
+# NOTES:
+################
+# 1. In test.feature file, just include @testTag as normal practice. Please DO NOT INCLUDE the "releases substitute token" (-rel15) for example: @testTag-rel15
+# 2. The @testTag will be automatically filtered based on release profile by pcf-tests/resources/script/updateSBATest_BasedOnReleaseProfile.sh
+# 3. Sample of the filtered/substituted @testTag to indicate the release(s) for test execution
+# -------------------------------------------
+# |   testTag              | test execution |
+# -------------------------------------------
+# | '@testTag'             | all releases   |
+# | '@testTag-rel15'       | ONLY -rel15    |
+# | '@testTag-rel16'       | ONLY -rel16    |
+# | '@testTag-rel15_rel16' | -rel15_rel16   |
+# | '@testTag-rel15_rel17' | -rel15_rel17   |
+# | '@testTag-rel16_rel17' | -rel16_rel17   |
+# -------------------------------------------
+
+tests:
+  IntegrationTest:
+    type: local
+    runner: SimpleRunner
+    healthCheckTimeout: 240
+    dockerCompose: /dc-yamls/docker-compose-base-config-DNNOverride-DnnInterfaceFormat-empty.yml
+    tags:
+      - '@GrepDockerImages'
+      - '@Health'
+      - '@rd_dt-rel15'
+      - '@rd_dt-rel16'
+      - '@dt_dt'
+      - '@dt_rd'
+```
