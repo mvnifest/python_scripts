@@ -1,68 +1,50 @@
 import sys
+import yaml
+import re
 import shutil
-
-# Initialize an empty list to store the parameters
-lista = []
-
-# Path to the source and destination files
-source_path = 'sba-tests.yaml'
-destination_path = 'sba-tests_origin.yaml'
-
-# Copy the content of the source file to the destination file
+source_path = 'sba-tests_origin.yaml'
+destination_path = 'sba-tests.yaml'
 shutil.copy(source_path, destination_path)
+def comment_out_tags(file_path, test_name, tag_to_keep):
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
 
-# Open the source file for writing (this will erase its contents)
-with open("sba-tests.yaml", "w") as help_file:
-    # Open the destination file for reading
-    with open("sba-tests_origin.yaml", "r") as origin_file:
-        lines = origin_file.readlines()
+    test_section_start = re.compile(rf'^\s*{test_name}:\s*$')
+    tag_line = re.compile(r'^\s*-\s*\'@(.+?)\'\s*$')
+    in_test_section = False
+
+    with open(file_path, 'w') as file:
         for line in lines:
-            # Remove the leading '#' from comment lines and write them to the help file
-            if line.startswith("#"):
-                help_file.write(line[1:])
+            if test_section_start.match(line):
+                in_test_section = True
+                file.write(line)
+                continue
+            elif in_test_section and line.strip() and not line.startswith((' ', '-', '#')):
+                in_test_section = False
+
+            if in_test_section:
+                tag_match = tag_line.match(line)
+                if tag_match and tag_match.group(1) != tag_to_keep:
+                    file.write(f"# {line}")
+                else:
+                    file.write(line)
             else:
-                help_file.write(line)
+                file.write(line)
 
-# Process the input parameters
-input_params = sys.argv
+    print(f"Updated {file_path}, keeping tag {tag_to_keep} in {test_name}.")
 
-# Extract the test name and the list of parameters
-test_name = []
-test = []
-indx = -1
 
-# Identify the index of the '#' character
-for i, char in enumerate(input_params[1]):
-    if char != "#":
-        test_name.append(char)
-    else:
-        indx = i
-        break
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print("Usage: python update-sba.py IntegrationTest#GrepDockerImages")
+        sys.exit(1)
 
-# If '#' character is found, process the parameters
-if indx != -1:
-    for i in input_params[1][indx+1:]:
-        if i == ',':
-            word = ''.join(test)
-            lista.append(word)
-            test = []
-        else:
-            test.append(i)
+    arg = sys.argv[1]
+    if "#" not in arg:
+        print("Invalid argument format. Expected format: IntegrationTest#GrepDockerImages")
+        sys.exit(1)
 
-    if test:
-        word = ''.join(test)
-        lista.append("- '@" + word + "'")
+    test_name, tag_to_keep = arg.split("#")
+    file_path = 'sba-tests.yaml'  # Update this if the file is located elsewhere
 
-# Modify the destination file based on the collected parameters
-with open("sba-tests_origin.yaml", "w") as nowy:
-    with open("sba-tests.yaml", "r") as plik:
-        linie = plik.readlines()
-        for linia in linie:
-            myslnik = linia.strip()
-            if myslnik and myslnik[0]=="-" and myslnik in lista:
-                nowy.write(linia)
-            if myslnik and  myslnik[0]=="-" and myslnik not in lista:
-                nowy.write("#"+linia)
-            if myslnik[0]!="-":
-                nowy.write(linia)
-shutil.copy(destination_path,source_path)
+    comment_out_tags(file_path, test_name, tag_to_keep)
