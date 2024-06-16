@@ -10,10 +10,13 @@ import os
 
 def is_file_empty(file_path):
     return os.path.exists(file_path) and os.path.getsize(file_path) == 0
-if is_file_empty(source_path):
+if not os.path.exists(source_path):
     shutil.copy(destination_path,source_path)
-else:
-    shutil.copy(source_path, destination_path)
+
+# if is_file_empty(source_path):
+#     shutil.copy(destination_path,source_path)
+# else:
+#     shutil.copy(source_path, destination_path)
 def comment_out_tags(file_path, test_name, tag_to_keep):
     with open(file_path, 'r') as file:
         lines = file.readlines()
