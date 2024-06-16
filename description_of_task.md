@@ -208,3 +208,16 @@ tests:
       - '@dt_dt'
       - '@dt_rd'
 ```
+
+#### The description of task
+we have a file sba-tests.yaml which is located in the default path ./target/test-classes this file should be modified according the rules below.
+1. The result file should be in the same location and co
+
+AcceptanceCriteria:
+  - Input:
+    - data file is sba-tests.yaml
+    - the default path to file is ./target/test-classes but might be defined by parameter option -p/--path
+  - Output:
+    - the programm should take required tags from parameters as result other tags should be commented
+    - the data file from input section should be modified according the follofing rules.
+    - those tags from tags section whish are not presented in parameters should be commented
