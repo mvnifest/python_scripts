@@ -2,8 +2,8 @@ import sys
 import yaml
 import re
 import shutil
-source_path = 'sba-tests_origin.yaml'
-destination_path = 'sba-tests.yaml'
+source_path = 'target/test-classes/sba-tests_origin.yaml'
+destination_path = 'target/test-classes/sba-tests.yaml'
 
 
 import os
@@ -54,6 +54,6 @@ if __name__ == "__main__":
         sys.exit(1)
 
     test_name, tag_to_keep = arg.split("#")
-    file_path = 'sba-tests.yaml'  # Update this if the file is located elsewhere
+    file_path = 'target/test-classes/sba-tests.yaml'  # Update this if the file is located elsewhere
 
     comment_out_tags(file_path, test_name, tag_to_keep)
